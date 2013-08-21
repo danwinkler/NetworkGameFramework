@@ -16,8 +16,6 @@ import com.phyloa.dlib.renderer.Graphics2DRenderer;
 
 public class DNGFHomeScreen extends DScreen<DNGFClient, Graphics2DRenderer> implements DUIListener
 {
-	DNGFClient client;
-	
 	DUI dui;
 	
 	DPanel panel;
@@ -27,7 +25,6 @@ public class DNGFHomeScreen extends DScreen<DNGFClient, Graphics2DRenderer> impl
 	
 	public DNGFHomeScreen( DNGFClient client )
 	{
-		this.client = client;
 		AWTComponentEventMapper em = new AWTComponentEventMapper();
 		em.register( client.canvas );
 		dui = new DUI( em );
@@ -82,25 +79,32 @@ public class DNGFHomeScreen extends DScreen<DNGFClient, Graphics2DRenderer> impl
 
 	public void event( DUIEvent event ) 
 	{
-		if( event.getElement() == startLocalServer && event.getType() == DButton.MOUSE_UP )
+		if( event.getType() == DButton.MOUSE_UP )
 		{
-			if( client.server == null )
+			if( event.getElement() == startLocalServer )
 			{
-				try 
+				if( gc.server == null )
 				{
-					client.server = (DNGFServer)client.getServerClass().newInstance();
-					client.server.begin();
-					startLocalServer.setText( "Stop Local Server" );
-				} catch ( Exception e ) 
+					try 
+					{
+						gc.server = (DNGFServer)gc.getServerClass().newInstance();
+						gc.server.begin();
+						startLocalServer.setText( "Stop Local Server" );
+					} catch ( Exception e ) 
+					{
+						e.printStackTrace();
+					}
+				}
+				else
 				{
-					e.printStackTrace();
+					gc.server.stop();
+					gc.server = null;
+					startLocalServer.setText( "Start Local Server" );
 				}
 			}
-			else
+			else if( event.getElement() == joinGame )
 			{
-				client.server.stop();
-				client.server = null;
-				startLocalServer.setText( "Start Local Server" );
+				dsh.activate( "connect", gc );
 			}
 		}
 	}

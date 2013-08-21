@@ -3,12 +3,13 @@ package com.danwink.dngf;
 import java.util.List;
 import java.util.ArrayList;
 
+import com.danwink.dngf.DNGFInternalMessage.DNGFInternalMessageType;
 import com.phyloa.dlib.network.DMessage;
 import com.phyloa.dlib.network.DServer;
 
 public abstract class DNGFServer<E extends Enum>
 {
-	DServer<DNGFMessage<E>> server;
+	DServer server;
 	
 	private int writeBuffer = 1024;
 	private int objectBuffer = 4096;
@@ -20,14 +21,18 @@ public abstract class DNGFServer<E extends Enum>
 	
 	ServerLoop sl;
 	
+	boolean inLobby = false;
+	
 	public void begin()
 	{
-		server = new DServer<DNGFMessage<E>>( writeBuffer, objectBuffer );
+		server = new DServer( writeBuffer, objectBuffer );
 		for( Class c : classesToRegister )
 		{
 			server.register( c );
 		}
 		server.register( DNGFMessage.class );
+		server.register( DNGFInternalMessage.class );
+		server.register( DNGFInternalMessageType.class );
 		server.start( 31456, 31457 );
 		
 		Thread t = new Thread( sl = new ServerLoop() );
@@ -38,20 +43,46 @@ public abstract class DNGFServer<E extends Enum>
 	{
 		while( server.hasServerMessages() )
 		{
-			DMessage<DNGFMessage<E>> dm = server.getNextServerMessage();
+			DMessage dm = server.getNextServerMessage();
 			
-			switch( dm.messageType )
+			if( dm.message instanceof DNGFInternalMessage )
 			{
-			case CONNECTED:
-				onConnect( dm.sender );
-				break;
-			case DISCONNECTED:
-				onDisconnect( dm.sender );
-				break;
-			case DATA:
-				handleMessage( dm.sender, dm.message.type, dm.message.message );
-				break;
+				
 			}
+			else
+			{
+				DNGFMessage<E> message = (DNGFMessage<E>)dm.message;
+				switch( dm.messageType )
+				{
+				case CONNECTED:
+					server.sendToClient( dm.sender, new DNGFInternalMessage( inLobby ? DNGFInternalMessageType.LOBBY : DNGFInternalMessageType.PLAY, null ) );
+					if( inLobby )
+					{
+						
+					}
+					else
+					{
+						
+						onConnect( dm.sender );
+					}
+					break;
+				case DISCONNECTED:
+					onDisconnect( dm.sender );
+					break;
+				case DATA:
+					handleMessage( dm.sender, message.type, message.message );
+					break;
+				}
+			}
+		}
+		
+		if( inLobby )
+		{
+			
+		}
+		else
+		{
+			update( d );
 		}
 	}
 	

@@ -1,8 +1,13 @@
 package com.danwink.dngf;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import com.danwink.dngf.DNGFInternalMessage.DNGFInternalMessageType;
+import com.danwink.dngf.screens.DNGFConnectScreen;
 import com.danwink.dngf.screens.DNGFHomeScreen;
+import com.phyloa.dlib.network.DClient;
+import com.phyloa.dlib.network.DServer;
 import com.phyloa.dlib.renderer.DScreen;
 import com.phyloa.dlib.renderer.DScreenHandler;
 import com.phyloa.dlib.renderer.Graphics2DRenderer;
@@ -15,23 +20,34 @@ public abstract class DNGFClient<E extends Enum> extends Graphics2DRenderer
 	
 	DScreenHandler<DNGFClient<E>, Graphics2DRenderer> dsh = new DScreenHandler<DNGFClient<E>, Graphics2DRenderer>();
 	
+	private int writeBuffer = 1024;
+	private int objectBuffer = 4096;
+	
+	int portTCP = 35123;
+	int portUDP = 35125;
+	
 	public DNGFServer<E> server;
+	public DClient client;
 	
 	//settings
 	public String startScreen = "home";
 	public DScreen homeScreen;
+	public DScreen connectScreen;
 	
 	public void initialize()
 	{
+		size( 1280, 800 );
+		
 		//set defaults
 		homeScreen = new DNGFHomeScreen( this );
+		connectScreen = new DNGFConnectScreen();
 		
 		//allow for changes
 		setup();
 		
 		//now that settings are set, create everything
 		dsh.register( "home", homeScreen );
-		
+		dsh.register( "connect", connectScreen );
 		
 		dsh.activate( startScreen, this );
 	}
@@ -65,5 +81,38 @@ public abstract class DNGFClient<E extends Enum> extends Graphics2DRenderer
 	public Class getServerClass()
 	{
 		return serverClass;
+	}
+
+	public int getWriteBuffer() {
+		return writeBuffer;
+	}
+
+	public void setWriteBuffer(int writeBuffer) {
+		this.writeBuffer = writeBuffer;
+	}
+
+	public int getObjectBuffer() {
+		return objectBuffer;
+	}
+
+	public void setObjectBuffer(int objectBuffer) {
+		this.objectBuffer = objectBuffer;
+	}
+
+	public void startClient( String address ) throws IOException 
+	{
+		if( client != null )
+		{
+			client.stop();
+		}
+		client = new DClient( writeBuffer, objectBuffer );
+		for( Class c : classesToRegister )
+		{
+			client.register( c );
+		}
+		client.register( DNGFMessage.class );
+		client.register( DNGFInternalMessage.class );
+		client.register( DNGFInternalMessageType.class );
+		client.start( address, 1000, 31456, 31457 );
 	}
 }

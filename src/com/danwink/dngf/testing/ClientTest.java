@@ -22,6 +22,7 @@ public class ClientTest extends DNGFClient<TestEnum>
 	{
 		ClientTest ct = new ClientTest();
 		ct.addClasses( TestClassRegister.classes );
+		ct.setServerClass( ServerTest.class );
 		ct.begin();
 	}
 

@@ -2,6 +2,6 @@ package com.danwink.dngf;
 
 public class DNGFMessage<E extends Enum>
 {
-	E type;
-	Object message;
+	public E type;
+	public Object message;
 }
