@@ -1,11 +1,13 @@
 package com.danwink.dngf.screens;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 import com.danwink.dngf.DNGFClient;
 import com.danwink.dngf.DNGFInternalMessage;
 import com.danwink.dngf.DNGFInternalMessage.DNGFInternalMessageType;
+import com.danwink.dngf.DNGFMessage;
 import com.phyloa.dlib.dui.AWTComponentEventMapper;
 import com.phyloa.dlib.dui.DButton;
 import com.phyloa.dlib.dui.DTextBox;
@@ -61,6 +63,9 @@ public class DNGFConnectScreen extends DScreen<DNGFClient, Graphics2DRenderer> i
 
 	public void render( DNGFClient gc, Graphics2DRenderer g )
 	{
+		g.color( Color.white );
+		g.fillRect( 0, 0, g.getWidth(), g.getHeight() );
+		
 		dui.render( g );
 	}
 
@@ -117,12 +122,26 @@ public class DNGFConnectScreen extends DScreen<DNGFClient, Graphics2DRenderer> i
 							break;
 						}
 					}
+					else
+					{
+						dsh.activate( "play", gc );
+						DNGFMessage mess = (DNGFMessage)m.message;
+						gc.handleMessage( mess.type, mess.message );
+						break;
+					}
+				}
+				try
+				{
+					Thread.sleep( 50 );
+				} catch( InterruptedException e )
+				{
+					e.printStackTrace();
 				}
 			}
 			
 		} catch( IOException e )
 		{
-			
+			e.printStackTrace();
 		}
 	}
 

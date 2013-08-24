@@ -1,7 +1,9 @@
 package com.danwink.dngf.screens;
 
 import com.danwink.dngf.DNGFClient;
+import com.danwink.dngf.DNGFInternalMessage;
 import com.danwink.dngf.DNGFMessage;
+import com.phyloa.dlib.network.DMessage;
 import com.phyloa.dlib.renderer.DScreen;
 import com.phyloa.dlib.renderer.DScreenHandler;
 import com.phyloa.dlib.renderer.Graphics2DRenderer;
@@ -13,8 +15,16 @@ public class DNGFPlayScreen extends DScreen<DNGFClient, Graphics2DRenderer>
 	{
 		if( gc.client.hasClientMessages() )
 		{
-			DNGFMessage message = (DNGFMessage)gc.client.getNextClientMessage().message;
-			gc.handleMessage( message.type, message.message );
+			DMessage m = gc.client.getNextClientMessage();
+			if( m.message instanceof DNGFInternalMessage )
+			{
+				
+			}
+			else
+			{
+				DNGFMessage message = (DNGFMessage)m.message;
+				gc.handleMessage( message.type, message.message );
+			}
 		}
 		
 		gc.update( delta / 1000.f );

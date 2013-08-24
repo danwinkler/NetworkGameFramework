@@ -48,7 +48,7 @@ public class ClientTest extends DNGFClient<TestEnum>
 			}
 			break;
 		case REMOVE:
-			int idToRemove = (int)o;
+			int idToRemove = (Integer)o;
 			players.remove( idToRemove );
 			break;
 		}

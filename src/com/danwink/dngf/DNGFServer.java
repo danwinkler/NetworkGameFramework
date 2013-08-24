@@ -11,8 +11,8 @@ public abstract class DNGFServer<E extends Enum>
 {
 	DServer server;
 	
-	private int writeBuffer = 1024;
-	private int objectBuffer = 4096;
+	private int writeBuffer = 102400;
+	private int objectBuffer = 409600;
 	
 	private int portTCP = 35123;
 	private int portUDP = 35125;
@@ -33,7 +33,7 @@ public abstract class DNGFServer<E extends Enum>
 		server.register( DNGFMessage.class );
 		server.register( DNGFInternalMessage.class );
 		server.register( DNGFInternalMessageType.class );
-		server.start( 31456, 31457 );
+		server.start( portTCP, portUDP );
 		
 		Thread t = new Thread( sl = new ServerLoop() );
 		t.start();
@@ -96,12 +96,12 @@ public abstract class DNGFServer<E extends Enum>
 	
 	public void sendOne( int id, E e, Object o )
 	{
-		
+		server.sendToClient( id, new DNGFMessage( e, o ) );
 	}
 	
 	public void sendAll( E e, Object o )
 	{
-		
+		server.sendToAllClients( new DNGFMessage( e, o ) );
 	}
 	
 	public abstract void update( float d );
@@ -129,7 +129,7 @@ public abstract class DNGFServer<E extends Enum>
 				try{
 				long timeDiff = System.currentTimeMillis() - lastWholeFrame;
 				lastWholeFrame = System.currentTimeMillis();
-				update( 1000.f / timeDiff );
+				internalUpdate( 1000.f / timeDiff );
 				} catch( Exception ex )
 				{
 					ex.printStackTrace();

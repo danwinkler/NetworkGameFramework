@@ -1,11 +1,13 @@
 package com.danwink.dngf;
 
+import java.awt.RenderingHints;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import com.danwink.dngf.DNGFInternalMessage.DNGFInternalMessageType;
 import com.danwink.dngf.screens.DNGFConnectScreen;
 import com.danwink.dngf.screens.DNGFHomeScreen;
+import com.danwink.dngf.screens.DNGFPlayScreen;
 import com.phyloa.dlib.network.DClient;
 import com.phyloa.dlib.network.DServer;
 import com.phyloa.dlib.renderer.DScreen;
@@ -20,8 +22,8 @@ public abstract class DNGFClient<E extends Enum> extends Graphics2DRenderer
 	
 	DScreenHandler<DNGFClient<E>, Graphics2DRenderer> dsh = new DScreenHandler<DNGFClient<E>, Graphics2DRenderer>();
 	
-	private int writeBuffer = 1024;
-	private int objectBuffer = 4096;
+	private int writeBuffer = 102400;
+	private int objectBuffer = 409600;
 	
 	int portTCP = 35123;
 	int portUDP = 35125;
@@ -48,12 +50,14 @@ public abstract class DNGFClient<E extends Enum> extends Graphics2DRenderer
 		//now that settings are set, create everything
 		dsh.register( "home", homeScreen );
 		dsh.register( "connect", connectScreen );
+		dsh.register( "play", (DScreen)new DNGFPlayScreen() );
 		
 		dsh.activate( startScreen, this );
 	}
 
 	public void update()
 	{
+		g.setRenderingHint( RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON );
 		//TODO add timing
 		dsh.update( this, 10 );
 		dsh.render( this, this );
@@ -113,6 +117,6 @@ public abstract class DNGFClient<E extends Enum> extends Graphics2DRenderer
 		client.register( DNGFMessage.class );
 		client.register( DNGFInternalMessage.class );
 		client.register( DNGFInternalMessageType.class );
-		client.start( address, 1000, 31456, 31457 );
+		client.start( address, 1000, portTCP, portUDP );
 	}
 }
