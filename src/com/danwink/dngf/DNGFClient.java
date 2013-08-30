@@ -102,6 +102,11 @@ public abstract class DNGFClient<E extends Enum> extends Graphics2DRenderer
 	public void setObjectBuffer(int objectBuffer) {
 		this.objectBuffer = objectBuffer;
 	}
+	
+	public void send( E type, Object message )
+	{
+		client.sendToServer( new DNGFMessage<E>( type, message ) );
+	}
 
 	public void startClient( String address ) throws IOException 
 	{
