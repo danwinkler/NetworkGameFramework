@@ -42,7 +42,7 @@ public class DNGFPlayScreen extends DScreen<DNGFClient, Graphics2DRenderer>
 
 	public void onExit() 
 	{
-		
+		gc.reset();
 	}
 
 	public void message( Object o )

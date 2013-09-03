@@ -124,6 +124,7 @@ public abstract class DNGFServer<E extends Enum>
 
 		public void run() 
 		{
+			serverStart();
 			lastTime = System.currentTimeMillis();
 			long lastWholeFrame = lastTime;
 			while( running )

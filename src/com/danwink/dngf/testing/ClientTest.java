@@ -12,11 +12,6 @@ import com.danwink.dngf.DNGFClient;
 public class ClientTest extends DNGFClient<TestEnum>
 {
 	HashMap<Integer, Point2i> players = new HashMap<Integer, Point2i>();
-	 
-	public void setup()
-	{
-		
-	}
 	
 	public static void main( String[] args )
 	{
@@ -72,5 +67,26 @@ public class ClientTest extends DNGFClient<TestEnum>
 			Point2i p = players.get( i );
 			fillOval( p.x - 10, p.y - 10, 20, 20 );
 		}
+	}
+
+	@Override
+	public void gameSetup()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void clientStart()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reset()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

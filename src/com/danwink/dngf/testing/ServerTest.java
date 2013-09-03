@@ -30,4 +30,18 @@ public class ServerTest extends DNGFServer<TestEnum>
 		st.addClasses( TestClassRegister.classes );
 		st.begin();
 	}
+
+	@Override
+	public void serverStart()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reset()
+	{
+		// TODO Auto-generated method stub
+		
+	}
 }
