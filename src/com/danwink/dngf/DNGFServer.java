@@ -104,6 +104,8 @@ public abstract class DNGFServer<E extends Enum>
 		server.sendToAllClients( new DNGFMessage( e, o ) );
 	}
 	
+	public abstract void serverStart();
+	public abstract void reset();
 	public abstract void update( float d );
 	public abstract void handleMessage( int sender, E type, Object message );
 	public abstract void onConnect( int id );

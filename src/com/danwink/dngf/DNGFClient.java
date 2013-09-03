@@ -45,7 +45,7 @@ public abstract class DNGFClient<E extends Enum> extends Graphics2DRenderer
 		connectScreen = new DNGFConnectScreen();
 		
 		//allow for changes
-		setup();
+		gameSetup();
 		
 		//now that settings are set, create everything
 		dsh.register( "home", homeScreen );
@@ -63,10 +63,11 @@ public abstract class DNGFClient<E extends Enum> extends Graphics2DRenderer
 		dsh.render( this, this );
 	}
 	
-	public abstract void setup();
 	
+	public abstract void gameSetup();
+	public abstract void clientStart();
+	public abstract void reset();
 	public abstract void handleMessage( E type, Object o );
-	
 	public abstract void update( float d );
 	
 	public void addClasses( Class... classes )

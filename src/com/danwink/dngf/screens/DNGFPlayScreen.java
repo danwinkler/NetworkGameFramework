@@ -37,7 +37,7 @@ public class DNGFPlayScreen extends DScreen<DNGFClient, Graphics2DRenderer>
 
 	public void onActivate( DNGFClient gc, DScreenHandler<DNGFClient, Graphics2DRenderer> dsh )
 	{
-		gc.setup();
+		gc.clientStart();
 	}
 
 	public void onExit() 
